@@ -1,0 +1,11 @@
+{
+  "category.begleiter": "Companion",
+  "key.begleiter.menu": "Companion settings",
+  "key.begleiter.talk": "Talk to companion",
+  "subtitles.begleiter.talk": "Companion chatters",
+  "subtitles.begleiter.happy": "Companion is happy",
+  "subtitles.begleiter.hmph": "Companion: Hmph!",
+  "subtitles.begleiter.angry": "Companion hisses",
+  "subtitles.begleiter.embarrassed": "Companion is flustered",
+  "subtitles.begleiter.sad": "Companion is sad"
+}

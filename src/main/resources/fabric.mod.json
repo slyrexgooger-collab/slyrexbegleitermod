@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "begleiter",
+  "version": "${version}",
+  "name": "Begleiter",
+  "description": "Clientseitiger Begleiter, der dir folgt, mit dem du reden kannst - mit Skin-Übernahme und Tsundere-Modus.",
+  "authors": ["slyrex"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.begleiter.BegleiterClient"]
+  },
+  "mixins": ["begleiter.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
