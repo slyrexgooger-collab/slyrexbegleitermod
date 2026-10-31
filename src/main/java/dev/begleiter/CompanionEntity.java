@@ -38,7 +38,7 @@ public class CompanionEntity extends OtherClientPlayerEntity {
 
     @Override
     public MutableText getDisplayName() {
-        Config c = Config.get();
+        dev.begleiter.Config c = dev.begleiter.Config.get();
         return Text.literal(c.displayName).formatted(c.tsundere ? Formatting.LIGHT_PURPLE : Formatting.AQUA);
     }
 
@@ -61,7 +61,7 @@ public class CompanionEntity extends OtherClientPlayerEntity {
         PlayerEntity owner = MinecraftClient.getInstance().player;
         if (owner == null || owner.getEntityWorld() != this.getEntityWorld()) return;
 
-        Config cfg = Config.get();
+        dev.begleiter.Config cfg = dev.begleiter.Config.get();
         double dx = owner.getX() - this.getX();
         double dz = owner.getZ() - this.getZ();
         double distH = Math.sqrt(dx * dx + dz * dz);
