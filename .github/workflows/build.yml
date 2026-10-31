@@ -1,11 +1,13 @@
 name: Build
 on: [push, workflow_dispatch]
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
@@ -14,3 +16,15 @@ jobs:
         with:
           name: begleiter-mod-jar
           path: build/libs/*.jar
+      - name: Release veröffentlichen
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Begleiter-Mod (neuester Build)
+          prerelease: false
+          make_latest: true
+          body: |
+            Fertige Mod für Minecraft 1.21.1 (Fabric).
+            Lade `begleiter-1.0.0.jar` herunter (NICHT die -sources.jar) und lege sie zusammen mit der Fabric API in deinen mods-Ordner.
+          files: |
+            build/libs/begleiter-*.jar
