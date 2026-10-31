@@ -11,7 +11,20 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - run: chmod +x gradlew && ./gradlew build
+      - name: Build
+        run: |
+          chmod +x gradlew
+          set -o pipefail
+          ./gradlew build 2>&1 | tee build.log
+      - name: Fehlerlog sichern
+        if: failure()
+        run: |
+          git config user.name ci; git config user.email ci@example.com
+          git checkout --orphan build-log
+          git rm -rfq --cached .
+          git add -f build.log
+          git commit -qm "build log"
+          git push -f origin build-log
       - uses: actions/upload-artifact@v4
         with:
           name: begleiter-mod-jar

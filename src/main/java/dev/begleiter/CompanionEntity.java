@@ -4,8 +4,9 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.util.DefaultSkinHelper;
-import net.minecraft.client.util.SkinTextures;
+import net.minecraft.entity.player.SkinTextures;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.MutableText;
@@ -26,10 +27,11 @@ public class CompanionEntity extends OtherClientPlayerEntity {
 
     public CompanionEntity(ClientWorld world, GameProfile profile) {
         super(world, profile);
+        this.noClip = false; // OtherClientPlayerEntity schaltet Kollision sonst ab
     }
 
     @Override
-    public SkinTextures getSkinTextures() {
+    public SkinTextures getSkin() {
         SkinTextures custom = SkinManager.getTextures();
         return custom != null ? custom : DefaultSkinHelper.getSkinTextures(this.getUuid());
     }
@@ -38,6 +40,12 @@ public class CompanionEntity extends OtherClientPlayerEntity {
     public MutableText getDisplayName() {
         Config c = Config.get();
         return Text.literal(c.displayName).formatted(c.tsundere ? Formatting.LIGHT_PURPLE : Formatting.AQUA);
+    }
+
+    /** OtherClientPlayerEntity macht hier nichts – wir wollen aber Schleichen anzeigen. */
+    @Override
+    protected void updatePose() {
+        this.setPose(this.isSneaking() ? EntityPose.CROUCHING : EntityPose.STANDING);
     }
 
     @Override
@@ -51,7 +59,7 @@ public class CompanionEntity extends OtherClientPlayerEntity {
         this.tickHandSwing();
 
         PlayerEntity owner = MinecraftClient.getInstance().player;
-        if (owner == null || owner.getWorld() != this.getWorld()) return;
+        if (owner == null || owner.getEntityWorld() != this.getEntityWorld()) return;
 
         Config cfg = Config.get();
         double dx = owner.getX() - this.getX();
@@ -107,24 +115,22 @@ public class CompanionEntity extends OtherClientPlayerEntity {
         this.bodyYaw = approachAngle(this.bodyYaw, yaw, moving ? 25f : 10f);
         this.setPitch(approachAngle(this.getPitch(), MathHelper.clamp(targetPitch, -60f, 60f), 10f));
 
-        // Für Umhang/Bobbing
-        this.prevStrideDistance = this.strideDistance;
-        float stride = this.isOnGround() ? (float) Math.min(0.1, Math.sqrt(vx * vx + vz * vz)) : 0f;
-        this.strideDistance += (stride - this.strideDistance) * 0.4f;
+        // Für Umhang/Laufanimation
+        this.tickPlayerMovement();
     }
 
     public void teleportNear(PlayerEntity owner) {
         Vec3d look = Vec3d.fromPolar(0, owner.getYaw()).normalize();
         Vec3d[] candidates = {
-                owner.getPos().subtract(look.multiply(2)),
-                owner.getPos().add(look.rotateY((float) Math.PI / 2).multiply(2)),
-                owner.getPos().add(look.rotateY((float) -Math.PI / 2).multiply(2)),
-                owner.getPos()
+                owner.getEntityPos().subtract(look.multiply(2)),
+                owner.getEntityPos().add(look.rotateY((float) Math.PI / 2).multiply(2)),
+                owner.getEntityPos().add(look.rotateY((float) -Math.PI / 2).multiply(2)),
+                owner.getEntityPos()
         };
-        Vec3d target = owner.getPos();
+        Vec3d target = owner.getEntityPos();
         for (Vec3d c : candidates) {
             Box box = this.getDimensions(this.getPose()).getBoxAt(c);
-            if (this.getWorld().isSpaceEmpty(this, box)) {
+            if (this.getEntityWorld().isSpaceEmpty(this, box)) {
                 target = c;
                 break;
             }

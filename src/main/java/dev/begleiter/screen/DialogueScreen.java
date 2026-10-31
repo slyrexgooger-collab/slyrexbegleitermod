@@ -69,7 +69,7 @@ public class DialogueScreen extends Screen {
         int panelY = Math.max(10, this.height / 2 - 110);
         ctx.fill(panelX, panelY, panelX + PANEL_W, panelY + PANEL_H, 0xCC101018);
         int border = Config.get().tsundere ? 0xFFFF77CC : 0xFF55CCFF;
-        ctx.drawBorder(panelX, panelY, PANEL_W, PANEL_H, border);
+        ctx.drawStrokedRectangle(panelX, panelY, PANEL_W, PANEL_H, border);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class DialogueScreen extends Screen {
             ctx.drawTextWithShadow(this.textRenderer, hearts,
                     panelX + PANEL_W - 8 - this.textRenderer.getWidth(hearts), panelY + 8, 0xFFFF77CC);
         }
-        ctx.drawTextWrapped(this.textRenderer, Text.literal(npcText), textX, panelY + 24,
+        ctx.drawWrappedTextWithShadow(this.textRenderer, Text.literal(npcText), textX, panelY + 24,
                 PANEL_W - 78 - 10, 0xFFE0E0E0);
     }
 

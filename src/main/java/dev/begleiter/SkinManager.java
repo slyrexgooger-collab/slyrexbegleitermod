@@ -7,7 +7,9 @@ import com.google.gson.JsonParser;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.client.util.SkinTextures;
+import net.minecraft.entity.player.PlayerSkinType;
+import net.minecraft.entity.player.SkinTextures;
+import net.minecraft.util.AssetInfo;
 import net.minecraft.util.Identifier;
 
 import java.io.InputStream;
@@ -64,10 +66,10 @@ public final class SkinManager {
                 .thenAcceptAsync(data -> {
                     if (currentId != null) mc.getTextureManager().destroyTexture(currentId);
                     Identifier id = Identifier.of(BegleiterClient.MOD_ID, "skins/" + clean.toLowerCase() + "_" + (counter++));
-                    mc.getTextureManager().registerTexture(id, new NativeImageBackedTexture(data.image()));
+                    mc.getTextureManager().registerTexture(id, new NativeImageBackedTexture(() -> "begleiter skin", data.image()));
                     currentId = id;
-                    current = new SkinTextures(id, null, null, null,
-                            data.slim() ? SkinTextures.Model.SLIM : SkinTextures.Model.WIDE, false);
+                    current = SkinTextures.create(new AssetInfo.TextureAssetInfo(id, id), null, null,
+                            data.slim() ? PlayerSkinType.SLIM : PlayerSkinType.WIDE);
                     status = "§aSkin von " + clean + " geladen!";
                 }, mc)
                 .exceptionally(t -> {

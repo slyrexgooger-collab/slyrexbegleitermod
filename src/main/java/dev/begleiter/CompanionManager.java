@@ -62,7 +62,7 @@ public final class CompanionManager {
             despawn();
             return;
         }
-        if (companion == null || companion.isRemoved() || companion.getWorld() != mc.world) {
+        if (companion == null || companion.isRemoved() || companion.getEntityWorld() != mc.world) {
             spawn(mc);
         }
         if (mc.isPaused()) return;
@@ -81,7 +81,7 @@ public final class CompanionManager {
 
     private static void despawn() {
         MinecraftClient mc = MinecraftClient.getInstance();
-        if (companion != null && mc.world != null && companion.getWorld() == mc.world) {
+        if (companion != null && mc.world != null && companion.getEntityWorld() == mc.world) {
             mc.world.removeEntity(companion.getId(), Entity.RemovalReason.DISCARDED);
         }
         companion = null;
